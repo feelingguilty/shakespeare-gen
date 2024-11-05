@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shakespeare Text Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        input, button, select {
+            margin: 5px;
+            padding: 10px;
+        }
+        #output {
+            margin-top: 20px;
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f4f4f4;
+            padding: 20px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <h1>Shakespeare Text Generator</h1>
+    <p>Enter a starting phrase, choose a temperature, and click "Generate".</p>
+
+    <input type="text" id="inputText" placeholder="Enter seed text">
+    <input type="number" id="length" placeholder="Length (e.g., 300)" value="300" min="100" max="1000">
+    <select id="temperature">
+        <option value="0.5">Temperature: 0.5</option>
+        <option value="0.7" selected>Temperature: 0.7</option>
+        <option value="1.0">Temperature: 1.0</option>
+        <option value="1.2">Temperature: 1.2</option>
+    </select>
+    <button onclick="generateText()">Generate</button>
+
+    <div id="output"></div>
+
+    <script>
+        async function generateText() {
+            const inputText = document.getElementById('inputText').value;
+            const length = parseInt(document.getElementById('length').value);
+            const temperature = parseFloat(document.getElementById('temperature').value);
+
+            const response = await fetch('/generate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ input_text: inputText, length: length, temperature: temperature })
+            });
+
+            const data = await response.json();
+            document.getElementById('output').innerText = data.generated_text;
+        }
+    </script>
+</body>
+</html>
